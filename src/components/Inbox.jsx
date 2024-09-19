@@ -2,7 +2,7 @@ import React, { useState } from 'react'
 import {FaCaretDown, FaUserFriends} from 'react-icons/fa'
 import {GoTag} from 'react-icons/go'
 import {IoMdRefresh, IoMdMore} from 'react-icons/io'
-import {MdCropSquare, MdInbox} from 'react-icons/md'
+import {MdCropSquare, MdInbox, MdKeyboardArrowLeft, MdKeyboardArrowRight} from 'react-icons/md'
 import Messages from './Messages'
 
 const mailType = [
@@ -40,8 +40,10 @@ const Inbox = () => {
           </div>
         </div>   
 
-        <div>
-          
+        <div className='flex items-center gap-2'>
+          <p className='text-sm text-gray-500'>1-50 of 1000</p>
+          <button className='hover:rounded-full hover:bg-gray-100'><MdKeyboardArrowLeft /> </button>
+          <button className='hover:rounded-full hover:bg-gray-100'><MdKeyboardArrowRight /> </button>
         </div>
 
       </div>

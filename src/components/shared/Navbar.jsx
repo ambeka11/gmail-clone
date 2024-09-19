@@ -1,12 +1,34 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { RxHamburgerMenu } from "react-icons/rx";
 import { IoIosSearch } from "react-icons/io";
 import { CiCircleQuestion } from "react-icons/ci";
 import { CiSettings } from "react-icons/ci";
 import { TbGridDots } from "react-icons/tb";
 import Avatar from 'react-avatar';
+import { useDispatch, useSelector } from 'react-redux';
+import { setSearchText, setUser } from '../../redux/appSlice';
+import { AnimatePresence, motion } from 'framer-motion';
+import { signOut } from 'firebase/auth';
+import{auth} from '../../firebase';
 
 const Navbar = () => {
+  const [input, setInput] = useState("");
+  const dispatch = useDispatch();
+  const [toggle, setToggle] = useState(false);
+  const {user} = useSelector(store=>store.appSlice);
+
+  const signOutHandler = () => {
+    signOut(auth).then(()=>{
+      dispatch(setUser(null));
+    }).catch((err)=>{
+      console.log(err);
+    })
+  }
+
+  useEffect(()=>{
+    dispatch(setSearchText(input))
+  }, [input]);
+
   return (
     <div className='flex item-center justify-between mx-3 h-16'>
       <div className='flex items-center gap-10'>
@@ -23,7 +45,9 @@ const Navbar = () => {
           <IoIosSearch size={"24px"} className="text-gray-700" />
           <input
            type="text" 
+           value={input}
            placeholder='Search Mail'
+           onChange={(e)=>setInput(e.target.value)}
            className='rounded-full w-full bg-transparent outline-none px-1'
            />
         </div>
@@ -40,8 +64,23 @@ const Navbar = () => {
           <div className='p-3 rounded-full hover:bg-gray-100 cursor-pointer'>
             <TbGridDots size={"20px"} />
           </div>
-          <div className='cursor-pointer'>
-              <Avatar src='https://i.pinimg.com/236x/a6/bc/64/a6bc64bf4eefbca2184982167f576325.jpg' size='40' round={true} className='' />
+          <div className='relative cursor-pointer'>
+              <Avatar onClick={()=>setToggle(!toggle)} src={user?.photoURL} size='40' round={true} className='' />
+              <AnimatePresence>
+                {
+                  toggle && (
+                    <motion.div
+                    initial={{opacity:0, scale:0.8 }}
+                    animate={{opacity:1, scale:1 }}
+                    exit={{opacity:0, scale:0.8}}
+                    transition={{duration:0.1}}
+                    className='absolute right-2 z-20 shadow-lg bg-white rounded-md'
+                    >
+                      <p onClick={signOutHandler} className='p-2 underLine'>LogOut</p>
+                    </motion.div>
+                  )
+                }
+              </AnimatePresence>
           </div>
         </div>
       </div>
